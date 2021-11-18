@@ -1,5 +1,4 @@
 import MultiVector3D.Companion.E123
-import Vector3D.Companion.NaN
 import kotlin.math.*
 
 operator fun Double.plus(that: Vector3D) = MultiVector3D(scalar = this, vec = that)
@@ -92,7 +91,6 @@ class MultiVector3D(var scalar: Double = 0.0, var vec: Vector3D = Vector3D(), va
     fun leftDiv(that: TriVector3D) = (1 / that) * this
     fun leftDiv(that: MultiVector3D) = (1 / that) * this
 
-
     operator fun unaryPlus() = this
     operator fun unaryMinus() = -1.0 * this
 
@@ -183,14 +181,11 @@ class Vector3D(var e1: Double = 0.0, var e2: Double = 0.0, var e3: Double = 0.0)
     }
 
     fun cosine(that: Vector3D) = (this dot that) / (this.magnitude() * that.magnitude())
-    fun sineSquared(that: Vector3D) = 1 - cosine(that).pow(2)
-    fun sine(that: Vector3D) = sqrt(sineSquared(that))
-    fun tangent(that: Vector3D) = cosine(that)/sine(that)
     fun angle(that: Vector3D) = acos(cosine(that))
 
     override fun toString(): String {
         return if (isNaN()) "NaN"
-        else "$e1\u200Eσ1 + $e2\u200Eσ2 + $e3\u200Eσ3"
+        else "${e1}σ1 + ${e2}σ2 + ${e3}σ3"
     }
 
     fun isNaN() = (e1.isNaN() || e2.isNaN() || e3.isNaN())
@@ -272,7 +267,7 @@ class BiVector3D(var e12: Double = 0.0, var e23: Double = 0.0, var e31: Double =
 
     override fun toString(): String {
         return if (isNaN()) "NaN"
-        else "$e12\u200Eσ12 + $e23\u200Eσ23 + $e31\u200Eσ31"
+        else "${e12}σ12 + ${e23}σ23 + ${e31}σ31"
     }
 
     fun isNaN() = (e12.isNaN() || e23.isNaN() || e31.isNaN())
@@ -328,7 +323,7 @@ class TriVector3D(var e123: Double = 0.0): KVector {
 
     override fun toString(): String {
         return if (isNaN()) "NaN"
-        else "$e123\u200Eσ123"
+        else "${e123}σ123"
     }
 
     fun isNaN() = this.e123.isNaN()
