@@ -185,7 +185,7 @@ class Vector3D(var e1: Double = 0.0, var e2: Double = 0.0, var e3: Double = 0.0)
 
     override fun toString(): String {
         return if (isNaN()) "NaN"
-        else "${e1}σ1 + ${e2}σ2 + ${e3}σ3"
+        else "${e1}σ₁ + ${e2}σ₂ + ${e3}σ₃"
     }
 
     fun isNaN() = (e1.isNaN() || e2.isNaN() || e3.isNaN())
@@ -267,7 +267,7 @@ class BiVector3D(var e12: Double = 0.0, var e23: Double = 0.0, var e31: Double =
 
     override fun toString(): String {
         return if (isNaN()) "NaN"
-        else "${e12}σ12 + ${e23}σ23 + ${e31}σ31"
+        else "${e12}σ₁₂ + ${e23}₂₃ + ${e31}σ₃₁"
     }
 
     fun isNaN() = (e12.isNaN() || e23.isNaN() || e31.isNaN())
@@ -323,7 +323,7 @@ class TriVector3D(var e123: Double = 0.0): KVector {
 
     override fun toString(): String {
         return if (isNaN()) "NaN"
-        else "${e123}σ123"
+        else "${e123}σ₁₂₃"
     }
 
     fun isNaN() = this.e123.isNaN()

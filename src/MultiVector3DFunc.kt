@@ -119,8 +119,8 @@ object MultiVector3DFunc {
         return if (that.vec != Vector3D()) {
             val theta = acos(that.norm().scalar)
             when {
-                that.biVec != BiVector3D() -> that.magnitude() + theta * that.biVec.norm()
-                that.triVec != TriVector3D() -> that.magnitude() + theta * that.triVec.norm()
+                that.biVec != BiVector3D() -> ln(that.magnitude()) + theta * that.biVec.norm()
+                that.triVec != TriVector3D() -> ln(that.magnitude()) + theta * that.triVec.norm()
                 else -> NaN
             }
         } else NaN
