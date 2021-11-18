@@ -113,8 +113,8 @@ object MultiVector3DFunc {
         }
     }
     fun ln(that: Vector3D) = Vector3D.NaN
-    fun ln(that: BiVector3D): MultiVector3D = ln(that.magnitude(), that) + (PI / 2) * that.norm()
-    fun ln(that: TriVector3D): MultiVector3D = ln(that.magnitude(), that) + (PI / 2) * that.norm()
+    fun ln(that: BiVector3D): MultiVector3D = ln(that.magnitude()) + (PI/2 * that.norm())
+    fun ln(that: TriVector3D): MultiVector3D = ln(that.magnitude()) + (PI/2 * that.norm())
     fun ln(that: MultiVector3D): MultiVector3D {
         return if (that.vec != Vector3D()) {
             val theta = acos(that.norm().scalar)
