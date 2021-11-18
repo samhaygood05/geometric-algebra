@@ -1,4 +1,5 @@
 import MultiVector3D.Companion.E123
+import Vector3D.Companion.NaN
 import kotlin.math.*
 
 operator fun Double.plus(that: Vector3D) = MultiVector3D(scalar = this, vec = that)
@@ -17,9 +18,9 @@ operator fun Double.times(that: TriVector3D) = TriVector3D(this * that.e123)
 operator fun Double.times(that: MultiVector3D) = MultiVector3D(this * that.scalar, this * that.vec, this * that.biVec, this * that.triVec)
 
 operator fun Double.div(that: Vector3D) = this * (that / that.squaredMag())
-operator fun Double.div(that: BiVector3D) = this * (that / (that dot that))
-operator fun Double.div(that: TriVector3D) = this * (that / (that * that))
-operator fun Double.div(that: MultiVector3D) = (this * that.clifConj()) / (that * that.clifConj()).scalar
+operator fun Double.div(that: BiVector3D) = this * (that / that.squaredMag())
+operator fun Double.div(that: TriVector3D) = this * (that / that.squaredMag())
+operator fun Double.div(that: MultiVector3D) = this * (that / that.squaredMag())
 
 operator fun Int.plus(that: Vector3D) = MultiVector3D(scalar = this.toDouble(), vec = that)
 operator fun Int.plus(that: BiVector3D) = MultiVector3D(scalar = this.toDouble(), biVec = that)
@@ -37,11 +38,11 @@ operator fun Int.times(that: TriVector3D) = TriVector3D(this * that.e123)
 operator fun Int.times(that: MultiVector3D) = MultiVector3D(this * that.scalar, this * that.vec, this * that.biVec, this * that.triVec)
 
 operator fun Int.div(that: Vector3D) = this * (that / that.squaredMag())
-operator fun Int.div(that: BiVector3D) = this * (that / (that dot that))
-operator fun Int.div(that: TriVector3D) = this * (that / (that * that))
-operator fun Int.div(that: MultiVector3D) = (this * that.clifConj()) / (that * that.clifConj()).scalar
+operator fun Int.div(that: BiVector3D) = this * (that / that.squaredMag())
+operator fun Int.div(that: TriVector3D) = this * (that / that.squaredMag())
+operator fun Int.div(that: MultiVector3D) = this * (that / that.squaredMag())
 
-class MultiVector3D(var scalar: Double = 0.0, var vec: Vector3D = Vector3D(), var biVec: BiVector3D = BiVector3D(), var triVec: TriVector3D = TriVector3D()) {
+class MultiVector3D(var scalar: Double = 0.0, var vec: Vector3D = Vector3D(), var biVec: BiVector3D = BiVector3D(), var triVec: TriVector3D = TriVector3D()): KVector {
 
     companion object {
         @JvmField
@@ -54,6 +55,8 @@ class MultiVector3D(var scalar: Double = 0.0, var vec: Vector3D = Vector3D(), va
         val E31 = BiVector3D(e31 = 1.0)
 
         val E123 = TriVector3D(e123 = 1.0)
+
+        val NaN = MultiVector3D(Double.NaN, Vector3D.NaN, BiVector3D.NaN, TriVector3D.NaN)
     }
 
     operator fun plus(that: Double) = MultiVector3D(scalar + that, vec, biVec, triVec)
@@ -89,18 +92,26 @@ class MultiVector3D(var scalar: Double = 0.0, var vec: Vector3D = Vector3D(), va
     fun leftDiv(that: TriVector3D) = (1 / that) * this
     fun leftDiv(that: MultiVector3D) = (1 / that) * this
 
-    fun conj() = MultiVector3D(scalar, -vec, -biVec, -triVec)
-    fun clifConj() = this.conj() * (this * this.conj()).conj()
 
     operator fun unaryPlus() = this
     operator fun unaryMinus() = -1.0 * this
+
+    fun reversion() = MultiVector3D(scalar, vec, -biVec, -triVec)
+
+    override fun squaredMag() = (reversion() * this).scalar
+    override fun magnitude() = sqrt(squaredMag())
+    override fun norm() = this / magnitude()
 
     override fun toString(): String {
         return "$scalar + ($vec) + ($biVec) + ($triVec)"
     }
 }
-
 class Vector3D(var e1: Double = 0.0, var e2: Double = 0.0, var e3: Double = 0.0): KVector {
+
+    companion object {
+        @JvmField
+        val NaN = Vector3D(Double.NaN, Double.NaN, Double.NaN)
+    }
 
     operator fun plus(that: Double) = that + this
     operator fun plus(that: Int) = that + this
@@ -166,7 +177,10 @@ class Vector3D(var e1: Double = 0.0, var e2: Double = 0.0, var e3: Double = 0.0)
 
     override fun squaredMag() = this dot this
     override fun magnitude() = sqrt(squaredMag())
-    override fun norm() = this / magnitude()
+    override fun norm(): Vector3D {
+        return if (magnitude() == 0.0) NaN
+        else this / magnitude()
+    }
 
     fun cosine(that: Vector3D) = (this dot that) / (this.magnitude() * that.magnitude())
     fun sineSquared(that: Vector3D) = 1 - cosine(that).pow(2)
@@ -175,11 +189,18 @@ class Vector3D(var e1: Double = 0.0, var e2: Double = 0.0, var e3: Double = 0.0)
     fun angle(that: Vector3D) = acos(cosine(that))
 
     override fun toString(): String {
-        return "$e1\u200Ee1 + $e2\u200Ee2 + $e3\u200Ee3"
+        return if (isNaN()) "NaN"
+        else "$e1\u200Eσ1 + $e2\u200Eσ2 + $e3\u200Eσ3"
     }
-}
 
+    fun isNaN() = (e1.isNaN() || e2.isNaN() || e3.isNaN())
+}
 class BiVector3D(var e12: Double = 0.0, var e23: Double = 0.0, var e31: Double = 0.0): KVector {
+
+    companion object {
+        @JvmField
+        val NaN = BiVector3D(Double.NaN, Double.NaN, Double.NaN)
+    }
 
     operator fun plus(that: Double) = that + this
     operator fun plus(that: Int) = that + this
@@ -242,19 +263,25 @@ class BiVector3D(var e12: Double = 0.0, var e23: Double = 0.0, var e31: Double =
     operator fun unaryPlus() = this
     operator fun unaryMinus() = -1.0 * this
 
-    override fun squaredMag(): Double {
-        return if (e12 != 0.0) Vector3D(e1 = e12, e3 = -e23).squaredMag() * Vector3D(e2 = 1.0, e3 = -e31 / e12).squaredMag() * Vector3D(e1 = e12, e3 = -e23).sineSquared(Vector3D(e2 = 1.0, e3 = -e31 / e12))
-        else Vector3D(e1 = -e31, e2 = e23).squaredMag() * Vector3D(e1 = -e31, e2 = e23).sineSquared(Vector3D(e3 = 1.0))
-    }
+    override fun squaredMag(): Double = -(this dot this)
     override fun magnitude() = sqrt(squaredMag())
-    override fun norm() = this / this.magnitude()
+    override fun norm(): BiVector3D {
+        return if (magnitude() == 0.0) NaN
+        else this / this.magnitude()
+    }
 
     override fun toString(): String {
-        return "$e12\u200Ee12 + $e23\u200Ee23 + $e31\u200Ee31"
+        return if (isNaN()) "NaN"
+        else "$e12\u200Eσ12 + $e23\u200Eσ23 + $e31\u200Eσ31"
     }
-}
 
+    fun isNaN() = (e12.isNaN() || e23.isNaN() || e31.isNaN())
+}
 class TriVector3D(var e123: Double = 0.0): KVector {
+
+    companion object {
+        val NaN = TriVector3D(Double.NaN)
+    }
 
     operator fun plus(that: Double) = that + this
     operator fun plus(that: Int) = that + this
@@ -292,11 +319,17 @@ class TriVector3D(var e123: Double = 0.0): KVector {
     operator fun unaryPlus() = this
     operator fun unaryMinus() = -1.0 * this
 
-    override fun squaredMag() = this.e123.pow(2)
+    override fun squaredMag() = e123.pow(2)
     override fun magnitude() = abs(e123)
-    override fun norm() = this / magnitude()
+    override fun norm():TriVector3D {
+        return if (magnitude() == 0.0 || magnitude().isNaN()) NaN
+        else this / magnitude()
+    }
 
     override fun toString(): String {
-        return "$e123\u200Ee123"
+        return if (isNaN()) "NaN"
+        else "$e123\u200Eσ123"
     }
+
+    fun isNaN() = this.e123.isNaN()
 }

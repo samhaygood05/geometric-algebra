@@ -1,4 +1,5 @@
 import MultiVector3D.Companion.E123
+import MultiVector3D.Companion.NaN
 import kotlin.math.*
 
 object MultiVector3DFunc {
@@ -16,8 +17,7 @@ object MultiVector3DFunc {
     fun cosh(that: Vector3D) = cosh(that.magnitude())
     fun cosh(that: BiVector3D) = cos(that.magnitude())
     fun cosh(that: TriVector3D) = cos(that.magnitude())
-    fun cosh(that: MultiVector3D) =
-        sinh(that.scalar) * sinh(that.vec) * sinh(that.biVec) * sinh(that.triVec) +
+    fun cosh(that: MultiVector3D) = sinh(that.scalar) * sinh(that.vec) * sinh(that.biVec) * sinh(that.triVec) +
         cosh(that.scalar) * cosh(that.vec) * cosh(that.biVec) * cosh(that.triVec) +
         sinh(that.scalar) * sinh(that.vec) * cosh(that.biVec) * cosh(that.triVec) +
         sinh(that.scalar) * cosh(that.vec) * sinh(that.biVec) * cosh(that.triVec) +
@@ -29,8 +29,7 @@ object MultiVector3DFunc {
     fun sinh(that: Vector3D) = sinh(that.magnitude())
     fun sinh(that: BiVector3D) = sin(that.magnitude()) * that.norm()
     fun sinh(that: TriVector3D) = sin(that.magnitude()) * that.norm()
-    fun sinh(that: MultiVector3D) =
-        sinh(that.scalar) * cosh(that.vec) * cosh(that.biVec) * cosh(that.triVec) +
+    fun sinh(that: MultiVector3D) = sinh(that.scalar) * cosh(that.vec) * cosh(that.biVec) * cosh(that.triVec) +
         sinh(that.scalar) * sinh(that.vec) * sinh(that.biVec) * cosh(that.triVec) +
         sinh(that.scalar) * sinh(that.vec) * cosh(that.biVec) * sinh(that.triVec) +
         sinh(that.scalar) * cosh(that.vec) * sinh(that.biVec) * sinh(that.triVec) +
@@ -50,8 +49,7 @@ object MultiVector3DFunc {
     fun cos(that: BiVector3D, basis: TriVector3D) = cosh(that * basis.norm())
     fun cos(that: TriVector3D, basis: BiVector3D) = cosh(that * basis.norm())
     fun cos(that: TriVector3D, basis: TriVector3D) = cosh(that * basis.norm())
-    fun cos(that: MultiVector3D, basis: BiVector3D) =
-        sin(that.scalar) * sin(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) +
+    fun cos(that: MultiVector3D, basis: BiVector3D) = sin(that.scalar) * sin(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) +
         cos(that.scalar) * cos(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
         sin(that.scalar) * sin(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
         sin(that.scalar) * cos(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
@@ -59,8 +57,7 @@ object MultiVector3DFunc {
         sin(that.scalar) * cos(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) -
         cos(that.scalar) * sin(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) -
         cos(that.scalar) * cos(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * sin(that.triVec, basis.norm())
-    fun cos(that: MultiVector3D, basis: TriVector3D) =
-        sin(that.scalar) * sin(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) +
+    fun cos(that: MultiVector3D, basis: TriVector3D) = sin(that.scalar) * sin(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) +
         cos(that.scalar) * cos(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
         sin(that.scalar) * sin(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
         sin(that.scalar) * cos(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
@@ -75,8 +72,7 @@ object MultiVector3DFunc {
     fun sin(that: BiVector3D, basis: TriVector3D) =  sinh(that * basis.norm()) / basis.norm()
     fun sin(that: TriVector3D, basis: BiVector3D) = sinh(that * basis.norm()) / basis.norm()
     fun sin(that: TriVector3D, basis: TriVector3D) = sinh(that * basis.norm()) / basis.norm()
-    fun sin(that: MultiVector3D, basis: BiVector3D) =
-        sin(that.scalar) * cos(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
+    fun sin(that: MultiVector3D, basis: BiVector3D) = sin(that.scalar) * cos(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
         sin(that.scalar) * sin(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
         sin(that.scalar) * sin(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) -
         sin(that.scalar) * cos(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) +
@@ -84,8 +80,7 @@ object MultiVector3DFunc {
         cos(that.scalar) * cos(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) +
         cos(that.scalar) * cos(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) -
         cos(that.scalar) * sin(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * sin(that.triVec, basis.norm())
-    fun sin(that: MultiVector3D, basis: TriVector3D) =
-        sin(that.scalar) * cos(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
+    fun sin(that: MultiVector3D, basis: TriVector3D) = sin(that.scalar) * cos(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
         sin(that.scalar) * sin(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * cos(that.triVec, basis.norm()) -
         sin(that.scalar) * sin(that.vec, basis.norm()) * cos(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) -
         sin(that.scalar) * cos(that.vec, basis.norm()) * sin(that.biVec, basis.norm()) * sin(that.triVec, basis.norm()) +
@@ -117,7 +112,17 @@ object MultiVector3DFunc {
             ln(abs(that)) + PI * basis.norm()
         }
     }
-    fun ln(that: Vector3D) = ln(that.magnitude()) - 2 // This definitely is not correct
+    fun ln(that: Vector3D) = Vector3D.NaN
     fun ln(that: BiVector3D): MultiVector3D = ln(that.magnitude(), that) + (PI / 2) * that.norm()
     fun ln(that: TriVector3D): MultiVector3D = ln(that.magnitude(), that) + (PI / 2) * that.norm()
+    fun ln(that: MultiVector3D): MultiVector3D {
+        return if (that.vec != Vector3D()) {
+            val theta = acos(that.norm().scalar)
+            when {
+                that.biVec != BiVector3D() -> that.magnitude() + theta * that.biVec.norm()
+                that.triVec != TriVector3D() -> that.magnitude() + theta * that.triVec.norm()
+                else -> NaN
+            }
+        } else NaN
+    }
 }
